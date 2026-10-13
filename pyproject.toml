@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "geoapify-address-review"
+version = "0.1.0"
+description = "A small, explainable address review CLI built with Geoapify OpenAPI"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [{name = "John Clyde"}]
+dependencies = []
+
+[project.scripts]
+address-review = "geoapify_address_review.cli:main"
+
+[project.urls]
+Repository = "https://github.com/johnclyde/geoapify"
+
+[tool.setuptools.packages.find]
+where = ["src"]

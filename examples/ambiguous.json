@@ -1,0 +1,51 @@
+{
+  "results": [
+    {
+      "formatted": "200 Larkin Street, San Francisco, CA 94102, United States",
+      "housenumber": "200",
+      "street": "Larkin Street",
+      "city": "San Francisco",
+      "state": "California",
+      "state_code": "CA",
+      "postcode": "94102",
+      "country": "United States",
+      "country_code": "us",
+      "lat": 37.77926,
+      "lon": -122.41554,
+      "result_type": "building",
+      "rank": {
+        "confidence": 1.0,
+        "confidence_city_level": 1.0,
+        "confidence_street_level": 1.0,
+        "confidence_building_level": 1.0,
+        "match_type": "full_match"
+      },
+      "datasource": {
+        "sourcename": "illustrative_fixture",
+        "attribution": "Synthetic example authored for this project; not a live Geoapify result."
+      }
+    },
+    {
+      "formatted": "Illustrative second candidate",
+      "housenumber": "200",
+      "street": "Larkin Street",
+      "city": "San Francisco",
+      "state": "California",
+      "state_code": "CA",
+      "postcode": "94102",
+      "country": "United States",
+      "country_code": "us",
+      "lat": 37.77926,
+      "lon": -122.4156,
+      "result_type": "building",
+      "rank": {
+        "confidence": 0.94,
+        "match_type": "full_match"
+      },
+      "datasource": {
+        "sourcename": "illustrative_fixture",
+        "attribution": "Synthetic example authored for this project; not a live Geoapify result."
+      }
+    }
+  ]
+}

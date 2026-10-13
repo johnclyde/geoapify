@@ -1,0 +1,18 @@
+{
+  "results": [
+    {
+      "formatted": "Larkin Street, San Francisco, CA, United States",
+      "street": "Larkin Street",
+      "city": "San Francisco",
+      "country": "United States",
+      "country_code": "us",
+      "lat": 37.77926,
+      "lon": -122.41554,
+      "result_type": "street",
+      "rank": {
+        "confidence": 0.8,
+        "match_type": "match_by_street"
+      }
+    }
+  ]
+}

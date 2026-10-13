@@ -1,0 +1,2067 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Geoapify Forward Geocoding API",
+    "version": "1.1.1",
+    "description": "Convert free-form or structured addresses into geographic coordinates."
+  },
+  "servers": [
+    {
+      "url": "https://api.geoapify.com/v1",
+      "description": "Default API endpoint."
+    },
+    {
+      "url": "https://api-eu.geoapify.com/v1",
+      "description": "EU-focused endpoint. Geoapify service processing uses EU infrastructure."
+    }
+  ],
+  "tags": [
+    {
+      "name": "Forward Geocoding",
+      "description": "Resolve addresses to coordinates."
+    }
+  ],
+  "paths": {
+    "/geocode/search": {
+      "get": {
+        "tags": [
+          "Forward Geocoding"
+        ],
+        "operationId": "forwardGeocode",
+        "summary": "Forward geocode an address",
+        "description": "Use one input mode: `text` for a free-form address, or one or more structured address parameters (`name`, `housenumber`, `street`, `postcode`, `city`, `state`, `country`). Do not combine `text` with structured address parameters.",
+        "parameters": [
+          {
+            "name": "text",
+            "in": "query",
+            "required": false,
+            "description": "Free-form address query. Alternative to the structured address parameters; do not combine them.",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            },
+            "example": "200 Larkin Street, San Francisco, CA 94102, United States"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "description": "Place or amenity name. Structured address input; do not use with `text`.",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            }
+          },
+          {
+            "name": "housenumber",
+            "in": "query",
+            "required": false,
+            "description": "House number. Structured address input; do not use with `text`.",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            }
+          },
+          {
+            "name": "street",
+            "in": "query",
+            "required": false,
+            "description": "Street name. Structured address input; do not use with `text`.",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            }
+          },
+          {
+            "name": "postcode",
+            "in": "query",
+            "required": false,
+            "description": "Postcode or ZIP code. Structured address input; do not use with `text`.",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            }
+          },
+          {
+            "name": "city",
+            "in": "query",
+            "required": false,
+            "description": "City name. Structured address input; do not use with `text`.",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            }
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "required": false,
+            "description": "State or region name. Structured address input; do not use with `text`.",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            }
+          },
+          {
+            "name": "country",
+            "in": "query",
+            "required": false,
+            "description": "Country name. Structured address input; do not use with `text`.",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "description": "Requested location type.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "country",
+                "state",
+                "city",
+                "postcode",
+                "street",
+                "amenity",
+                "locality"
+              ]
+            }
+          },
+          {
+            "name": "lang",
+            "in": "query",
+            "required": false,
+            "description": "Result language.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ab",
+                "aa",
+                "af",
+                "ak",
+                "sq",
+                "am",
+                "ar",
+                "an",
+                "hy",
+                "as",
+                "av",
+                "ae",
+                "ay",
+                "az",
+                "bm",
+                "ba",
+                "eu",
+                "be",
+                "bn",
+                "bh",
+                "bi",
+                "bs",
+                "br",
+                "bg",
+                "my",
+                "ca",
+                "ch",
+                "ce",
+                "ny",
+                "zh",
+                "cv",
+                "kw",
+                "co",
+                "cr",
+                "hr",
+                "cs",
+                "da",
+                "dv",
+                "nl",
+                "en",
+                "eo",
+                "et",
+                "ee",
+                "fo",
+                "fj",
+                "fi",
+                "fr",
+                "ff",
+                "gl",
+                "ka",
+                "de",
+                "el",
+                "gn",
+                "gu",
+                "ht",
+                "ha",
+                "he",
+                "hz",
+                "hi",
+                "ho",
+                "hu",
+                "ia",
+                "id",
+                "ie",
+                "ga",
+                "ig",
+                "ik",
+                "io",
+                "is",
+                "it",
+                "iu",
+                "ja",
+                "jv",
+                "kl",
+                "kn",
+                "kr",
+                "ks",
+                "kk",
+                "km",
+                "ki",
+                "rw",
+                "ky",
+                "kv",
+                "kg",
+                "ko",
+                "ku",
+                "kj",
+                "la",
+                "lb",
+                "lg",
+                "li",
+                "ln",
+                "lo",
+                "lt",
+                "lu",
+                "lv",
+                "gv",
+                "mk",
+                "mg",
+                "ms",
+                "ml",
+                "mt",
+                "mi",
+                "mr",
+                "mh",
+                "mn",
+                "na",
+                "nv",
+                "nb",
+                "nd",
+                "ne",
+                "ng",
+                "nn",
+                "no",
+                "ii",
+                "nr",
+                "oc",
+                "oj",
+                "cu",
+                "om",
+                "or",
+                "os",
+                "pa",
+                "pi",
+                "fa",
+                "pl",
+                "ps",
+                "pt",
+                "qu",
+                "rm",
+                "rn",
+                "ro",
+                "ru",
+                "sa",
+                "sc",
+                "sd",
+                "se",
+                "sm",
+                "sg",
+                "sr",
+                "gd",
+                "sn",
+                "si",
+                "sk",
+                "sl",
+                "so",
+                "st",
+                "es",
+                "su",
+                "sw",
+                "ss",
+                "sv",
+                "ta",
+                "te",
+                "tg",
+                "th",
+                "ti",
+                "bo",
+                "tk",
+                "tl",
+                "tn",
+                "to",
+                "tr",
+                "ts",
+                "tt",
+                "tw",
+                "ty",
+                "ug",
+                "uk",
+                "ur",
+                "uz",
+                "ve",
+                "vi",
+                "vo",
+                "wa",
+                "cy",
+                "wo",
+                "fy",
+                "xh",
+                "yi",
+                "yo",
+                "za"
+              ],
+              "default": "en"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of results.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "countrycodes",
+            "in": "query",
+            "required": false,
+            "description": "ISO 3166-1 alpha-2 country filters.",
+            "schema": {
+              "type": "array",
+              "minItems": 0,
+              "maxItems": 10,
+              "items": {
+                "type": "string",
+                "enum": [
+                  "ad",
+                  "ae",
+                  "af",
+                  "ag",
+                  "ai",
+                  "al",
+                  "am",
+                  "an",
+                  "ao",
+                  "ap",
+                  "aq",
+                  "ar",
+                  "as",
+                  "at",
+                  "au",
+                  "aw",
+                  "az",
+                  "ba",
+                  "bb",
+                  "bd",
+                  "be",
+                  "bf",
+                  "bg",
+                  "bh",
+                  "bi",
+                  "bj",
+                  "bm",
+                  "bn",
+                  "bo",
+                  "br",
+                  "bs",
+                  "bt",
+                  "bv",
+                  "bw",
+                  "by",
+                  "bz",
+                  "ca",
+                  "cc",
+                  "cd",
+                  "cf",
+                  "cg",
+                  "ch",
+                  "ci",
+                  "ck",
+                  "cl",
+                  "cm",
+                  "cn",
+                  "co",
+                  "cr",
+                  "cu",
+                  "cv",
+                  "cx",
+                  "cy",
+                  "cz",
+                  "de",
+                  "dj",
+                  "dk",
+                  "dm",
+                  "do",
+                  "dz",
+                  "ec",
+                  "ee",
+                  "eg",
+                  "eh",
+                  "er",
+                  "es",
+                  "et",
+                  "eu",
+                  "fi",
+                  "fj",
+                  "fk",
+                  "fm",
+                  "fo",
+                  "fr",
+                  "ga",
+                  "gb",
+                  "gd",
+                  "ge",
+                  "gf",
+                  "gg",
+                  "gh",
+                  "gi",
+                  "gl",
+                  "gm",
+                  "gn",
+                  "gp",
+                  "gq",
+                  "gr",
+                  "gs",
+                  "gt",
+                  "gu",
+                  "gw",
+                  "gy",
+                  "hk",
+                  "hm",
+                  "hn",
+                  "hr",
+                  "ht",
+                  "hu",
+                  "id",
+                  "ie",
+                  "im",
+                  "il",
+                  "in",
+                  "io",
+                  "iq",
+                  "ir",
+                  "is",
+                  "it",
+                  "je",
+                  "jm",
+                  "jo",
+                  "jp",
+                  "ke",
+                  "kg",
+                  "kh",
+                  "ki",
+                  "km",
+                  "kn",
+                  "kp",
+                  "kr",
+                  "kw",
+                  "ky",
+                  "kz",
+                  "la",
+                  "lb",
+                  "lc",
+                  "li",
+                  "lk",
+                  "lr",
+                  "ls",
+                  "lt",
+                  "lu",
+                  "lv",
+                  "ly",
+                  "ma",
+                  "mc",
+                  "md",
+                  "me",
+                  "mg",
+                  "mh",
+                  "mk",
+                  "ml",
+                  "mm",
+                  "mn",
+                  "mo",
+                  "mp",
+                  "mq",
+                  "mr",
+                  "ms",
+                  "mt",
+                  "mu",
+                  "mv",
+                  "mw",
+                  "mx",
+                  "my",
+                  "mz",
+                  "na",
+                  "nc",
+                  "ne",
+                  "nf",
+                  "ng",
+                  "ni",
+                  "nl",
+                  "no",
+                  "np",
+                  "nr",
+                  "nu",
+                  "nz",
+                  "om",
+                  "pa",
+                  "pe",
+                  "pf",
+                  "pg",
+                  "ph",
+                  "pk",
+                  "pl",
+                  "pm",
+                  "pr",
+                  "ps",
+                  "pt",
+                  "pw",
+                  "py",
+                  "qa",
+                  "re",
+                  "ro",
+                  "rs",
+                  "ru",
+                  "rw",
+                  "sa",
+                  "sb",
+                  "sc",
+                  "sd",
+                  "se",
+                  "sg",
+                  "sh",
+                  "si",
+                  "sj",
+                  "sk",
+                  "sl",
+                  "sm",
+                  "sn",
+                  "so",
+                  "sr",
+                  "st",
+                  "sv",
+                  "sy",
+                  "sz",
+                  "tc",
+                  "td",
+                  "tf",
+                  "tg",
+                  "th",
+                  "tj",
+                  "tk",
+                  "tm",
+                  "tn",
+                  "to",
+                  "tr",
+                  "tt",
+                  "tv",
+                  "tw",
+                  "tz",
+                  "ua",
+                  "ug",
+                  "um",
+                  "us",
+                  "uy",
+                  "uz",
+                  "va",
+                  "vc",
+                  "ve",
+                  "vg",
+                  "vi",
+                  "vn",
+                  "vu",
+                  "wf",
+                  "ws",
+                  "ye",
+                  "yt",
+                  "za",
+                  "zm",
+                  "zw"
+                ]
+              }
+            }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "required": false,
+            "description": "Hard result filters.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^(rect|circle|countrycode|place):.+"
+              }
+            }
+          },
+          {
+            "name": "bias",
+            "in": "query",
+            "required": false,
+            "description": "Result ranking bias.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^(proximity|rect|circle|countrycode):.+"
+              }
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "required": false,
+            "description": "Response serialization: `geojson`, `json`, or `xml`.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "json",
+                "geojson",
+                "xml"
+              ],
+              "default": "geojson"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Geocoding results.",
+            "content": {
+              "application/geo+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TextGeocodingFeatureCollection"
+                },
+                "example": {
+                  "type": "FeatureCollection",
+                  "features": [
+                    {
+                      "type": "Feature",
+                      "properties": {
+                        "datasource": {
+                          "sourcename": "openstreetmap",
+                          "attribution": "© OpenStreetMap contributors",
+                          "license": "Open Database License",
+                          "url": "https://www.openstreetmap.org/copyright"
+                        },
+                        "name": "Asian Art Museum of San Francisco",
+                        "country": "United States",
+                        "country_code": "us",
+                        "state": "California",
+                        "city": "San Francisco",
+                        "postcode": "94102",
+                        "district": "Civic Center",
+                        "suburb": "Civic Center",
+                        "street": "Larkin Street",
+                        "housenumber": "200",
+                        "iso3166_2": "US-CA",
+                        "lon": -122.4159922,
+                        "lat": 37.780315,
+                        "state_code": "CA",
+                        "result_type": "amenity",
+                        "formatted": "Asian Art Museum of San Francisco, 200 Larkin Street, San Francisco, CA 94102, United States of America",
+                        "address_line1": "Asian Art Museum of San Francisco",
+                        "address_line2": "200 Larkin Street, San Francisco, CA 94102, United States of America",
+                        "category": "entertainment.museum",
+                        "timezone": {
+                          "name": "America/Los_Angeles",
+                          "offset_STD": "-08:00",
+                          "offset_DST": "-07:00",
+                          "offset_STD_seconds": -28800,
+                          "offset_DST_seconds": -25200,
+                          "abbreviation_STD": "PST",
+                          "abbreviation_DST": "PDT"
+                        },
+                        "plus_code": "849VQHJM+4J",
+                        "plus_code_short": "JM+4J San Francisco, California, United States",
+                        "rank": {
+                          "importance": 0.40308494416412793,
+                          "popularity": 7.947566780780423,
+                          "confidence": 1,
+                          "confidence_city_level": 1,
+                          "confidence_street_level": 1,
+                          "confidence_building_level": 1,
+                          "match_type": "inner_part"
+                        },
+                        "place_id": "510899bf9d9f9a5ec05904caa65ce1e34240f00102f901052f770100000000c00201920321417369616e20417274204d757365756d206f662053616e204672616e636973636f"
+                      },
+                      "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                          -122.4159922,
+                          37.780315
+                        ]
+                      },
+                      "bbox": [
+                        -122.4166302,
+                        37.7799687,
+                        -122.4153648,
+                        37.7805223
+                      ]
+                    },
+                    {
+                      "type": "Feature",
+                      "properties": {
+                        "datasource": {
+                          "sourcename": "openstreetmap",
+                          "attribution": "© OpenStreetMap contributors",
+                          "license": "Open Database License",
+                          "url": "https://www.openstreetmap.org/copyright"
+                        },
+                        "name": "Asian Art Museum Cafe",
+                        "country": "United States",
+                        "country_code": "us",
+                        "state": "California",
+                        "city": "San Francisco",
+                        "postcode": "94102",
+                        "district": "Civic Center",
+                        "suburb": "Civic Center",
+                        "street": "Larkin Street",
+                        "housenumber": "200",
+                        "iso3166_2": "US-CA",
+                        "lon": -122.4160624,
+                        "lat": 37.780058,
+                        "state_code": "CA",
+                        "result_type": "amenity",
+                        "formatted": "Asian Art Museum Cafe, 200 Larkin Street, San Francisco, CA 94102, United States of America",
+                        "address_line1": "Asian Art Museum Cafe",
+                        "address_line2": "200 Larkin Street, San Francisco, CA 94102, United States of America",
+                        "category": "catering.cafe",
+                        "timezone": {
+                          "name": "America/Los_Angeles",
+                          "offset_STD": "-08:00",
+                          "offset_DST": "-07:00",
+                          "offset_STD_seconds": -28800,
+                          "offset_DST_seconds": -25200,
+                          "abbreviation_STD": "PST",
+                          "abbreviation_DST": "PDT"
+                        },
+                        "plus_code": "849VQHJM+2H",
+                        "plus_code_short": "JM+2H San Francisco, California, United States",
+                        "rank": {
+                          "importance": 0.00008251392385743523,
+                          "popularity": 7.947566780780423,
+                          "confidence": 1,
+                          "confidence_city_level": 1,
+                          "confidence_street_level": 1,
+                          "confidence_building_level": 1,
+                          "match_type": "inner_part"
+                        },
+                        "place_id": "51194630c4a09a5ec059d87dc7f0d8e34240f00103f901792d95a702000000c00201920315417369616e20417274204d757365756d2043616665"
+                      },
+                      "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                          -122.4160624,
+                          37.780058
+                        ]
+                      },
+                      "bbox": [
+                        -122.4161124,
+                        37.780008,
+                        -122.4160124,
+                        37.780108
+                      ]
+                    }
+                  ],
+                  "query": {
+                    "text": "200 Larkin Street, San Francisco, CA 94102, United States",
+                    "parsed": {
+                      "housenumber": "200",
+                      "street": "larkin street",
+                      "postcode": "94102",
+                      "city": "san francisco",
+                      "state": "ca",
+                      "country": "united states",
+                      "expected_type": "building"
+                    }
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeocodingJsonResponse"
+                },
+                "example": {
+                  "results": [
+                    {
+                      "datasource": {
+                        "sourcename": "openstreetmap",
+                        "attribution": "© OpenStreetMap contributors",
+                        "license": "Open Database License",
+                        "url": "https://www.openstreetmap.org/copyright"
+                      },
+                      "name": "Asian Art Museum of San Francisco",
+                      "country": "United States",
+                      "country_code": "us",
+                      "state": "California",
+                      "city": "San Francisco",
+                      "postcode": "94102",
+                      "district": "Civic Center",
+                      "suburb": "Civic Center",
+                      "street": "Larkin Street",
+                      "housenumber": "200",
+                      "iso3166_2": "US-CA",
+                      "lon": -122.4159922,
+                      "lat": 37.780315,
+                      "state_code": "CA",
+                      "result_type": "amenity",
+                      "formatted": "Asian Art Museum of San Francisco, 200 Larkin Street, San Francisco, CA 94102, United States of America",
+                      "address_line1": "Asian Art Museum of San Francisco",
+                      "address_line2": "200 Larkin Street, San Francisco, CA 94102, United States of America",
+                      "category": "entertainment.museum",
+                      "timezone": {
+                        "name": "America/Los_Angeles",
+                        "offset_STD": "-08:00",
+                        "offset_DST": "-07:00",
+                        "offset_STD_seconds": -28800,
+                        "offset_DST_seconds": -25200,
+                        "abbreviation_STD": "PST",
+                        "abbreviation_DST": "PDT"
+                      },
+                      "plus_code": "849VQHJM+4J",
+                      "plus_code_short": "JM+4J San Francisco, California, United States",
+                      "rank": {
+                        "importance": 0.40308494416412793,
+                        "popularity": 7.947566780780423,
+                        "confidence": 1,
+                        "confidence_city_level": 1,
+                        "confidence_street_level": 1,
+                        "confidence_building_level": 1,
+                        "match_type": "inner_part"
+                      },
+                      "place_id": "510899bf9d9f9a5ec05904caa65ce1e34240f00102f901052f770100000000c00201920321417369616e20417274204d757365756d206f662053616e204672616e636973636f",
+                      "bbox": {
+                        "lon1": -122.4166302,
+                        "lat1": 37.7799687,
+                        "lon2": -122.4153648,
+                        "lat2": 37.7805223
+                      }
+                    },
+                    {
+                      "datasource": {
+                        "sourcename": "openstreetmap",
+                        "attribution": "© OpenStreetMap contributors",
+                        "license": "Open Database License",
+                        "url": "https://www.openstreetmap.org/copyright"
+                      },
+                      "name": "Asian Art Museum Cafe",
+                      "country": "United States",
+                      "country_code": "us",
+                      "state": "California",
+                      "city": "San Francisco",
+                      "postcode": "94102",
+                      "district": "Civic Center",
+                      "suburb": "Civic Center",
+                      "street": "Larkin Street",
+                      "housenumber": "200",
+                      "iso3166_2": "US-CA",
+                      "lon": -122.4160624,
+                      "lat": 37.780058,
+                      "state_code": "CA",
+                      "result_type": "amenity",
+                      "formatted": "Asian Art Museum Cafe, 200 Larkin Street, San Francisco, CA 94102, United States of America",
+                      "address_line1": "Asian Art Museum Cafe",
+                      "address_line2": "200 Larkin Street, San Francisco, CA 94102, United States of America",
+                      "category": "catering.cafe",
+                      "timezone": {
+                        "name": "America/Los_Angeles",
+                        "offset_STD": "-08:00",
+                        "offset_DST": "-07:00",
+                        "offset_STD_seconds": -28800,
+                        "offset_DST_seconds": -25200,
+                        "abbreviation_STD": "PST",
+                        "abbreviation_DST": "PDT"
+                      },
+                      "plus_code": "849VQHJM+2H",
+                      "plus_code_short": "JM+2H San Francisco, California, United States",
+                      "rank": {
+                        "importance": 0.00008251392385743523,
+                        "popularity": 7.947566780780423,
+                        "confidence": 1,
+                        "confidence_city_level": 1,
+                        "confidence_street_level": 1,
+                        "confidence_building_level": 1,
+                        "match_type": "inner_part"
+                      },
+                      "place_id": "51194630c4a09a5ec059d87dc7f0d8e34240f00103f901792d95a702000000c00201920315417369616e20417274204d757365756d2043616665",
+                      "bbox": {
+                        "lon1": -122.4161124,
+                        "lat1": 37.780008,
+                        "lon2": -122.4160124,
+                        "lat2": 37.780108
+                      }
+                    }
+                  ],
+                  "query": {
+                    "text": "200 Larkin Street, San Francisco, CA 94102, United States",
+                    "parsed": {
+                      "housenumber": "200",
+                      "street": "larkin street",
+                      "postcode": "94102",
+                      "city": "san francisco",
+                      "state": "ca",
+                      "country": "united states",
+                      "expected_type": "building"
+                    }
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForwardGeocodingXmlResponse"
+                },
+                "example": {
+                  "results": [
+                    {
+                      "datasource": {
+                        "sourcename": "openstreetmap",
+                        "attribution": "© OpenStreetMap contributors",
+                        "license": "Open Database License",
+                        "url": "https://www.openstreetmap.org/copyright"
+                      },
+                      "name": "Asian Art Museum of San Francisco",
+                      "country": "United States",
+                      "country_code": "us",
+                      "state": "California",
+                      "city": "San Francisco",
+                      "postcode": "94102",
+                      "district": "Civic Center",
+                      "suburb": "Civic Center",
+                      "street": "Larkin Street",
+                      "housenumber": "200",
+                      "iso3166_2": "US-CA",
+                      "lon": -122.4159922,
+                      "lat": 37.780315,
+                      "state_code": "CA",
+                      "result_type": "amenity",
+                      "formatted": "Asian Art Museum of San Francisco, 200 Larkin Street, San Francisco, CA 94102, United States of America",
+                      "address_line1": "Asian Art Museum of San Francisco",
+                      "address_line2": "200 Larkin Street, San Francisco, CA 94102, United States of America",
+                      "category": "entertainment.museum",
+                      "timezone": {
+                        "name": "America/Los_Angeles",
+                        "offset_STD": "-08:00",
+                        "offset_DST": "-07:00",
+                        "offset_STD_seconds": -28800,
+                        "offset_DST_seconds": -25200,
+                        "abbreviation_STD": "PST",
+                        "abbreviation_DST": "PDT"
+                      },
+                      "plus_code": "849VQHJM+4J",
+                      "plus_code_short": "JM+4J San Francisco, California, United States",
+                      "rank": {
+                        "importance": 0.40308494416412793,
+                        "popularity": 7.947566780780423,
+                        "confidence": 1,
+                        "confidence_city_level": 1,
+                        "confidence_street_level": 1,
+                        "confidence_building_level": 1,
+                        "match_type": "inner_part"
+                      },
+                      "place_id": "510899bf9d9f9a5ec05904caa65ce1e34240f00102f901052f770100000000c00201920321417369616e20417274204d757365756d206f662053616e204672616e636973636f",
+                      "bbox": {
+                        "lon1": -122.4166302,
+                        "lat1": 37.7799687,
+                        "lon2": -122.4153648,
+                        "lat2": 37.7805223
+                      }
+                    },
+                    {
+                      "datasource": {
+                        "sourcename": "openstreetmap",
+                        "attribution": "© OpenStreetMap contributors",
+                        "license": "Open Database License",
+                        "url": "https://www.openstreetmap.org/copyright"
+                      },
+                      "name": "Asian Art Museum Cafe",
+                      "country": "United States",
+                      "country_code": "us",
+                      "state": "California",
+                      "city": "San Francisco",
+                      "postcode": "94102",
+                      "district": "Civic Center",
+                      "suburb": "Civic Center",
+                      "street": "Larkin Street",
+                      "housenumber": "200",
+                      "iso3166_2": "US-CA",
+                      "lon": -122.4160624,
+                      "lat": 37.780058,
+                      "state_code": "CA",
+                      "result_type": "amenity",
+                      "formatted": "Asian Art Museum Cafe, 200 Larkin Street, San Francisco, CA 94102, United States of America",
+                      "address_line1": "Asian Art Museum Cafe",
+                      "address_line2": "200 Larkin Street, San Francisco, CA 94102, United States of America",
+                      "category": "catering.cafe",
+                      "timezone": {
+                        "name": "America/Los_Angeles",
+                        "offset_STD": "-08:00",
+                        "offset_DST": "-07:00",
+                        "offset_STD_seconds": -28800,
+                        "offset_DST_seconds": -25200,
+                        "abbreviation_STD": "PST",
+                        "abbreviation_DST": "PDT"
+                      },
+                      "plus_code": "849VQHJM+2H",
+                      "plus_code_short": "JM+2H San Francisco, California, United States",
+                      "rank": {
+                        "importance": 0.00008251392385743523,
+                        "popularity": 7.947566780780423,
+                        "confidence": 1,
+                        "confidence_city_level": 1,
+                        "confidence_street_level": 1,
+                        "confidence_building_level": 1,
+                        "match_type": "inner_part"
+                      },
+                      "place_id": "51194630c4a09a5ec059d87dc7f0d8e34240f00103f901792d95a702000000c00201920315417369616e20417274204d757365756d2043616665",
+                      "bbox": {
+                        "lon1": -122.4161124,
+                        "lat1": 37.780008,
+                        "lon2": -122.4160124,
+                        "lat2": 37.780108
+                      }
+                    }
+                  ],
+                  "query": {
+                    "text": "200 Larkin Street, San Francisco, CA 94102, United States",
+                    "parsed": {
+                      "housenumber": "200",
+                      "street": "larkin street",
+                      "postcode": "94102",
+                      "city": "san francisco",
+                      "state": "ca",
+                      "country": "united states",
+                      "expected_type": "building"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid forward geocoding parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GatewayError"
+                },
+                "example": {
+                  "statusCode": 400,
+                  "error": "Bad Request",
+                  "message": "\"limit\" must be less than or equal to 100"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid Geoapify API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GatewayError"
+                },
+                "example": {
+                  "statusCode": 401,
+                  "error": "Unauthorized",
+                  "message": "Invalid apiKey"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or quota exceeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GatewayError"
+                },
+                "example": {
+                  "statusCode": 429,
+                  "error": "Too Many Requests",
+                  "message": "Quota exceeded"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal gateway error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GatewayError"
+                },
+                "example": {
+                  "statusCode": 500,
+                  "error": "Internal Server Error",
+                  "message": "Request failed, please try again later"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "FeatureCollection": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": [
+          "type",
+          "features"
+        ],
+        "properties": {
+          "type": {
+            "const": "FeatureCollection"
+          },
+          "features": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Feature"
+            }
+          }
+        }
+      },
+      "Feature": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": [
+          "type",
+          "properties",
+          "geometry"
+        ],
+        "properties": {
+          "type": {
+            "const": "Feature"
+          },
+          "properties": {
+            "$ref": "#/components/schemas/GeocodingProperties"
+          },
+          "geometry": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/PointGeometry"
+              },
+              {
+                "$ref": "#/components/schemas/GenericGeometry"
+              },
+              {
+                "$ref": "#/components/schemas/GeometryCollection"
+              }
+            ]
+          },
+          "bbox": {
+            "type": "array",
+            "minItems": 4,
+            "maxItems": 6,
+            "items": {
+              "type": "number"
+            }
+          }
+        }
+      },
+      "PointGeometry": {
+        "type": "object",
+        "required": [
+          "type",
+          "coordinates"
+        ],
+        "properties": {
+          "type": {
+            "const": "Point"
+          },
+          "coordinates": {
+            "$ref": "#/components/schemas/Position"
+          }
+        }
+      },
+      "GenericGeometry": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": [
+          "type",
+          "coordinates"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "LineString",
+              "Polygon",
+              "MultiPoint",
+              "MultiLineString",
+              "MultiPolygon"
+            ]
+          },
+          "coordinates": {
+            "type": "array"
+          }
+        }
+      },
+      "GeometryCollection": {
+        "type": "object",
+        "required": [
+          "type",
+          "geometries"
+        ],
+        "properties": {
+          "type": {
+            "const": "GeometryCollection"
+          },
+          "geometries": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/PointGeometry"
+                },
+                {
+                  "$ref": "#/components/schemas/GenericGeometry"
+                },
+                {
+                  "$ref": "#/components/schemas/GeometryCollection"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "Position": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 3,
+        "prefixItems": [
+          {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180
+          },
+          {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90
+          },
+          {
+            "type": "number"
+          }
+        ],
+        "items": false
+      },
+      "TimezoneOutput": {
+        "type": "object",
+        "required": [
+          "name",
+          "offset_STD",
+          "offset_DST",
+          "offset_STD_seconds",
+          "offset_DST_seconds"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "name_alt": {
+            "type": "string"
+          },
+          "country_codes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "offset_STD": {
+            "type": "string"
+          },
+          "offset_DST": {
+            "type": "string"
+          },
+          "offset_STD_seconds": {
+            "type": "number"
+          },
+          "offset_DST_seconds": {
+            "type": "number"
+          },
+          "abbreviation_STD": {
+            "type": "string"
+          },
+          "abbreviation_DST": {
+            "type": "string"
+          }
+        }
+      },
+      "PublicDatasource": {
+        "type": "object",
+        "properties": {
+          "sourcename": {
+            "type": "string"
+          },
+          "attribution": {
+            "type": "string"
+          },
+          "license": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          }
+        }
+      },
+      "PlacesDatasource": {
+        "type": "object",
+        "required": [
+          "raw"
+        ],
+        "properties": {
+          "sourcename": {
+            "type": "string"
+          },
+          "attribution": {
+            "type": "string"
+          },
+          "license": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "raw": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
+      },
+      "GeocodingRank": {
+        "type": "object",
+        "properties": {
+          "confidence": {
+            "type": "number"
+          },
+          "confidence_city_level": {
+            "type": "number"
+          },
+          "confidence_street_level": {
+            "type": "number"
+          },
+          "confidence_building_level": {
+            "type": "number"
+          },
+          "match_type": {
+            "type": "string",
+            "enum": [
+              "full_match",
+              "inner_part",
+              "match_by_building",
+              "match_by_street",
+              "match_by_postcode",
+              "match_by_city_or_disrict",
+              "match_by_country_or_state"
+            ]
+          },
+          "importance": {
+            "type": "number"
+          },
+          "popularity": {
+            "type": "number"
+          }
+        }
+      },
+      "WikiPopulation": {
+        "type": "object",
+        "required": [
+          "actual",
+          "by_years"
+        ],
+        "properties": {
+          "actual": {
+            "type": "string"
+          },
+          "by_years": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "ParsedAddress": {
+        "type": "object",
+        "properties": {
+          "po_box": {
+            "type": "string"
+          },
+          "unit": {
+            "type": "string"
+          },
+          "house": {
+            "type": "string"
+          },
+          "housenumber": {
+            "type": "string"
+          },
+          "street": {
+            "type": "string"
+          },
+          "suburb": {
+            "type": "string"
+          },
+          "postcode": {
+            "type": "string"
+          },
+          "district": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "county": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "region": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "expected_type": {
+            "type": "string",
+            "enum": [
+              "unknown",
+              "amenity_name",
+              "amenity",
+              "building",
+              "street",
+              "postcode",
+              "suburb",
+              "district",
+              "city",
+              "county",
+              "state",
+              "country"
+            ]
+          }
+        }
+      },
+      "TextGeocoderQuery": {
+        "type": "object",
+        "properties": {
+          "lat": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90
+          },
+          "lon": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180
+          },
+          "plus_code": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "postcode": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "housenumber": {
+            "type": "string"
+          },
+          "street": {
+            "type": "string"
+          },
+          "parsed": {
+            "$ref": "#/components/schemas/ParsedAddress"
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "keys",
+                "label"
+              ],
+              "properties": {
+                "keys": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "label": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ReverseGeocoderQuery": {
+        "type": "object",
+        "properties": {
+          "lat": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90
+          },
+          "lon": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180
+          },
+          "plus_code": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "postcode": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          }
+        }
+      },
+      "GeocodingProperties": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "continent": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "country_code": {
+            "type": "string"
+          },
+          "region": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "state_code": {
+            "type": "string"
+          },
+          "state_COG": {
+            "type": "string"
+          },
+          "department_COG": {
+            "type": "string"
+          },
+          "state_district": {
+            "type": "string"
+          },
+          "province": {
+            "type": "string"
+          },
+          "department": {
+            "type": "string"
+          },
+          "arrondissement": {
+            "type": "string"
+          },
+          "county": {
+            "type": "string"
+          },
+          "county_code": {
+            "type": "string"
+          },
+          "county_district": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "city_district": {
+            "type": "string"
+          },
+          "postcode": {
+            "type": "string"
+          },
+          "postal_code": {
+            "type": "string"
+          },
+          "openGeoDB:postal_codes": {
+            "type": "string"
+          },
+          "district": {
+            "type": "string"
+          },
+          "suburb": {
+            "type": "string"
+          },
+          "municipality": {
+            "type": "string"
+          },
+          "commune": {
+            "type": "string"
+          },
+          "subdistrict": {
+            "type": "string"
+          },
+          "city_block": {
+            "type": "string"
+          },
+          "neighbourhood": {
+            "type": "string"
+          },
+          "quarter": {
+            "type": "string"
+          },
+          "section": {
+            "type": "string"
+          },
+          "sector": {
+            "type": "string"
+          },
+          "subdivision": {
+            "type": "string"
+          },
+          "croft": {
+            "type": "string"
+          },
+          "allotments": {
+            "type": "string"
+          },
+          "residental": {
+            "type": "string"
+          },
+          "farm": {
+            "type": "string"
+          },
+          "farmyard": {
+            "type": "string"
+          },
+          "industrial": {
+            "type": "string"
+          },
+          "commercial": {
+            "type": "string"
+          },
+          "retail": {
+            "type": "string"
+          },
+          "borough": {
+            "type": "string"
+          },
+          "town": {
+            "type": "string"
+          },
+          "township": {
+            "type": "string"
+          },
+          "village": {
+            "type": "string"
+          },
+          "hamlet": {
+            "type": "string"
+          },
+          "locality": {
+            "type": "string"
+          },
+          "isolated_dwelling": {
+            "type": "string"
+          },
+          "street": {
+            "type": "string"
+          },
+          "road": {
+            "type": "string"
+          },
+          "footway": {
+            "type": "string"
+          },
+          "pedestrian": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "housenumber": {
+            "type": "string"
+          },
+          "house_number": {
+            "type": "string"
+          },
+          "house_name": {
+            "type": "string"
+          },
+          "old_name": {
+            "type": "string"
+          },
+          "other": {
+            "type": "string"
+          },
+          "formatted": {
+            "type": "string"
+          },
+          "address_line1": {
+            "type": "string"
+          },
+          "address_line2": {
+            "type": "string"
+          },
+          "unlocode": {
+            "type": "string"
+          },
+          "iso3166_2": {
+            "type": "string"
+          },
+          "iso3166_2_sublevel": {
+            "type": "string"
+          },
+          "iso3166_sublevel": {
+            "type": "string"
+          },
+          "plus_code": {
+            "type": "string"
+          },
+          "plus_code_short": {
+            "type": "string"
+          },
+          "postcodes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "other_names": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "population": {
+            "type": "number"
+          },
+          "lon": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180
+          },
+          "lat": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90
+          },
+          "parent_as_place_id": {
+            "type": "boolean"
+          },
+          "timezone": {
+            "$ref": "#/components/schemas/TimezoneOutput"
+          },
+          "NUTS_3": {
+            "type": "string"
+          },
+          "result_type": {
+            "type": "string",
+            "enum": [
+              "unknown",
+              "amenity_name",
+              "amenity",
+              "building",
+              "street",
+              "postcode",
+              "suburb",
+              "district",
+              "city",
+              "county",
+              "state",
+              "country"
+            ]
+          },
+          "distance": {
+            "type": "number"
+          },
+          "datasource": {
+            "$ref": "#/components/schemas/PublicDatasource"
+          },
+          "rank": {
+            "$ref": "#/components/schemas/GeocodingRank"
+          },
+          "category": {
+            "type": "string"
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "place_id": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 2048
+          },
+          "bbox": {
+            "type": "object",
+            "required": [
+              "lon1",
+              "lat1",
+              "lon2",
+              "lat2"
+            ],
+            "properties": {
+              "lon1": {
+                "type": "number",
+                "minimum": -180,
+                "maximum": 180
+              },
+              "lat1": {
+                "type": "number",
+                "minimum": -90,
+                "maximum": 90
+              },
+              "lon2": {
+                "type": "number",
+                "minimum": -180,
+                "maximum": 180
+              },
+              "lat2": {
+                "type": "number",
+                "minimum": -90,
+                "maximum": 90
+              }
+            }
+          }
+        }
+      },
+      "TextGeocodingFeatureCollection": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FeatureCollection"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "query": {
+                "$ref": "#/components/schemas/TextGeocoderQuery"
+              }
+            }
+          }
+        ]
+      },
+      "ReverseGeocodingFeatureCollection": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FeatureCollection"
+          },
+          {
+            "type": "object",
+            "required": [
+              "query"
+            ],
+            "properties": {
+              "query": {
+                "$ref": "#/components/schemas/ReverseGeocoderQuery"
+              }
+            }
+          }
+        ]
+      },
+      "GeocodingJsonResponse": {
+        "type": "object",
+        "required": [
+          "results"
+        ],
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GeocodingProperties"
+            }
+          },
+          "query": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TextGeocoderQuery"
+              },
+              {
+                "$ref": "#/components/schemas/ReverseGeocoderQuery"
+              }
+            ]
+          }
+        }
+      },
+      "ForwardGeocodingXmlResponse": {
+        "type": "object",
+        "required": [
+          "results"
+        ],
+        "xml": {
+          "name": "root"
+        },
+        "properties": {
+          "results": {
+            "type": "array",
+            "xml": {
+              "name": "results",
+              "wrapped": false
+            },
+            "items": {
+              "$ref": "#/components/schemas/GeocodingProperties",
+              "xml": {
+                "name": "results"
+              }
+            }
+          },
+          "query": {
+            "$ref": "#/components/schemas/TextGeocoderQuery",
+            "xml": {
+              "name": "query"
+            }
+          }
+        }
+      },
+      "ReverseGeocodingXmlResponse": {
+        "type": "object",
+        "required": [
+          "results"
+        ],
+        "xml": {
+          "name": "root"
+        },
+        "properties": {
+          "results": {
+            "type": "array",
+            "xml": {
+              "name": "results",
+              "wrapped": false
+            },
+            "items": {
+              "$ref": "#/components/schemas/GeocodingProperties",
+              "xml": {
+                "name": "results"
+              }
+            }
+          },
+          "query": {
+            "$ref": "#/components/schemas/ReverseGeocoderQuery",
+            "xml": {
+              "name": "query"
+            }
+          }
+        }
+      },
+      "AddressAutocompleteXmlResponse": {
+        "type": "object",
+        "required": [
+          "results"
+        ],
+        "xml": {
+          "name": "root"
+        },
+        "properties": {
+          "results": {
+            "type": "array",
+            "xml": {
+              "name": "results",
+              "wrapped": false
+            },
+            "items": {
+              "$ref": "#/components/schemas/GeocodingProperties",
+              "xml": {
+                "name": "results"
+              }
+            }
+          },
+          "query": {
+            "$ref": "#/components/schemas/TextGeocoderQuery",
+            "xml": {
+              "name": "query"
+            }
+          }
+        }
+      },
+      "GatewayError": {
+        "type": "object",
+        "required": [
+          "statusCode",
+          "error",
+          "message"
+        ],
+        "properties": {
+          "statusCode": {
+            "type": "integer",
+            "description": "HTTP status code returned by the gateway."
+          },
+          "error": {
+            "type": "string",
+            "description": "Standard HTTP error name."
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable explanation of the error."
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "ApiKeyInQuery": {
+        "type": "apiKey",
+        "in": "query",
+        "name": "apiKey",
+        "description": "Geoapify API key query parameter. Recommended authentication method for public APIs. API keys in URLs can be logged; use x-api-key for server-to-server clients."
+      },
+      "ApiKeyInHeader": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key",
+        "description": "Geoapify API key header. Supported as an alternative authentication method for public APIs."
+      }
+    }
+  },
+  "security": [
+    {
+      "ApiKeyInQuery": []
+    },
+    {
+      "ApiKeyInHeader": []
+    }
+  ]
+}
