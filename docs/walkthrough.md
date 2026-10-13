@@ -2,7 +2,7 @@
 
 Geocoding can return a convincing display address even when the result only identifies a street or city. Address Review CLI keeps the evidence visible: the candidate address, coordinates, result type, confidence metadata, and specific reasons for review. It uses Geoapify's Forward Geocoding API with a small, explicit local policy.
 
-The review command accepts one address at a time. A separate, bounded evaluation script can exercise ten prepared scenarios. The project has no web server, database, or runtime AI dependency. Python 3.11 or later is sufficient for the offline example and tests.
+The review command accepts one address at a time. A separate, bounded evaluation script can exercise ten prepared scenarios. The project has no web server, database, or runtime AI dependency. Use Python 3.14 or later for the offline example and tests.
 
 ## 1. Start with the offline example
 

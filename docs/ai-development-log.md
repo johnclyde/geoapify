@@ -11,7 +11,7 @@ This is a technical summary of implementation and follow-up review. It is not a 
 
 ## Implementation brief
 
-The technical instructions asked for a small Python 3.11+ command-line package that accepts one address and emits a review report. The package should support an API key from the environment, an optional country restriction, a configurable timeout, and a fixture mode requiring no key or network.
+The current brief is a small Python 3.14+ command-line package that accepts one address and emits a review report. The package should support an API key from the environment, an optional country restriction, a configurable timeout, and a fixture mode requiring no key or network. Python 3.14 is the sole automated test target; supporting older Python versions is outside the scope.
 
 The initial review policy required exactly one returned building or amenity with street, house number, valid coordinates, confidence `1`, and `full_match`. Follow-up work asked for assessments per candidate, readable terminal reports, and a small live evaluation plan. The current policy also checks supplied component confidence scores and distinguishes broader results from competing possible buildings. Public examples remain illustrative synthetic data. Tests cover response interpretation and failure paths.
 

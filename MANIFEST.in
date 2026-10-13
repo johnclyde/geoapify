@@ -1,0 +1,6 @@
+include README.md PYPI.md LICENSE
+recursive-include docs *.md
+recursive-include examples *.json *.md
+recursive-include scripts *.py
+recursive-include specs *.json *.md LICENSE.geoapify
+recursive-include tests *.py

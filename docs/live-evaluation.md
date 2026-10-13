@@ -6,7 +6,7 @@ The repository includes ten observation inputs derived from one public civic add
 
 ## Inspect the plan
 
-From the repository root with Python 3.11 or later:
+From the repository root with Python 3.14 or later:
 
 ```sh
 PYTHONPATH=src python scripts/evaluate.py

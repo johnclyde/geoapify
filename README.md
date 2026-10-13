@@ -6,7 +6,7 @@ This is a conservative review heuristic. It does not certify postal deliverabili
 
 ## Try it without an API key
 
-Requires Python 3.11 or later. The runtime and tests use only the Python standard library.
+Requires Python 3.14 or later. Automated tests target Python 3.14. The runtime and tests use only the Python standard library.
 
 From the repository root:
 
@@ -35,7 +35,7 @@ A live run sends the supplied address to Geoapify. The tool makes one HTTPS requ
 For an installed command, create a virtual environment and install the package:
 
 ```sh
-python -m venv .venv
+python3.14 -m venv .venv
 . .venv/bin/activate
 python -m pip install -e .
 address-review --help

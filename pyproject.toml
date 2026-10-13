@@ -1,22 +1,33 @@
 [build-system]
-requires = ["setuptools>=68"]
+requires = ["setuptools>=77.0.3"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "geoapify-address-review"
 version = "0.2.0"
-description = "A small, explainable address review CLI built with Geoapify OpenAPI"
-readme = "README.md"
-requires-python = ">=3.11"
-license = {text = "MIT"}
+description = "Explainable address candidate review using Geoapify geocoding"
+readme = "PYPI.md"
+requires-python = ">=3.14"
+license = "MIT"
+license-files = ["LICENSE"]
 authors = [{name = "John Clyde"}]
 dependencies = []
+keywords = ["geoapify", "geocoding", "address", "geospatial", "cli"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Scientific/Engineering :: GIS",
+]
 
 [project.scripts]
 address-review = "geoapify_address_review.cli:main"
 
 [project.urls]
 Repository = "https://github.com/johnclyde/geoapify"
+Documentation = "https://github.com/johnclyde/geoapify/blob/main/docs/walkthrough.md"
 
 [tool.setuptools.packages.find]
 where = ["src"]
