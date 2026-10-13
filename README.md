@@ -1,6 +1,6 @@
 # Address Review CLI
 
-A small Python tool that makes Geoapify geocoding results easier to review. Give it one address; get JSON with candidate addresses, coordinates, match metadata, and reasons to check the result.
+A small Python tool that makes Geoapify geocoding results easier to review. Give it one address; get a readable report or JSON with candidate addresses, coordinates, match metadata, and reasons to check each result.
 
 This is a conservative review heuristic. It does not certify postal deliverability, occupancy, unit numbers, or correctness of every address component. A single returned candidate does not prove that an address is unique across the dataset.
 
@@ -13,10 +13,12 @@ From the repository root:
 ```sh
 PYTHONPATH=src python -m geoapify_address_review \
   '200 Larkin Street, San Francisco, CA 94102, United States' \
-  --fixture examples/single-candidate.json
+  --fixture examples/single-candidate.json --format text
 ```
 
 The fixture is illustrative synthetic data, not a captured Geoapify response. Fixture mode makes no network request and needs no API key.
+
+Use `--format json`, or omit `--format`, for machine-readable output. Both formats contain the same assessment. Reports identify whether the evidence came from a fixture or a live request.
 
 ## Query Geoapify
 
@@ -43,11 +45,19 @@ address-review --help
 
 | Status | Meaning |
 | --- | --- |
-| `candidate_found` | Exactly one returned result meets all of the conservative checks below. |
-| `needs_review` | Results exist, but there are multiple candidates, missing details, or other reasons for human review. |
+| `candidate_found` | One distinct candidate meets all checks; any other distinct results identify only broader areas or streets. |
+| `needs_review` | No candidate meets all checks, or another possible building or unknown result still needs comparison. |
 | `no_result` | A valid response contains an empty `results` array. |
 
-`candidate_found` requires a `building` or `amenity`, a street and house number, finite coordinates within geographic bounds, overall confidence exactly `1`, and `rank.match_type` equal to `full_match`. Missing required review evidence or invalid rank metadata causes review. These are this project's rules, not a Geoapify accuracy guarantee. In particular, `full_match` describes the address level and does not mean every component is correct.
+A candidate meets the rules when it describes a `building` or `amenity`, contains a street and house number, has finite coordinates within geographic bounds, has overall confidence exactly `1`, and has `rank.match_type` equal to `full_match`. Every supplied city, street, or building confidence score must also equal `1`. Those component scores are optional, but a conflicting or invalid score cannot be ignored. Missing required evidence or invalid rank metadata causes review.
+
+Each candidate has an `assessment`, readable `reasons`, and stable `reason_codes`. A matching building plus a broader street result can produce `candidate_found`. A second building, amenity, or unknown result still requires review, even if its confidence is lower. The allowed broader levels are `street`, `suburb`, `district`, `city`, `county`, `state`, `postcode`, and `country`.
+
+Only identical raw response objects are counted once. All returned rows remain visible; `duplicate_of` points to the first identical row. `candidate_count` counts all rows, `distinct_candidate_count` excludes identical duplicates, and `selected_candidate` is the one-based row index chosen by the rules, or `null`. Similar addresses or coordinates alone never establish a duplicate.
+
+These are this project's rules, not a Geoapify accuracy guarantee. In particular, `full_match` describes the address level and does not mean every component is correct. The rules have not been calibrated against live results.
+
+The CLI adds `source` (`fixture` or `live`), `country_filter`, and `tool_version` to the JSON report. In fixture mode the filter is always `null`: `--country` does not refilter saved results.
 
 Completed review reports go to standard output and exit with code `0`, including `needs_review` and `no_result`. Consumers must inspect `status`. Errors go to standard error as JSON: code `2` for input, key, or unreadable/invalid-JSON fixtures; code `1` for API errors or an invalid response envelope, including fixture envelopes. A malformed response is never reported as an empty search result.
 
@@ -60,11 +70,12 @@ PYTHONPATH=src python -m unittest discover -s tests -v
 Tests use synthetic fixtures and mocked HTTP behavior. No live API key is required. Live Geoapify behavior has not been verified for this version.
 
 - [Walkthrough](docs/walkthrough.md): run the example and understand the review rules.
+- [Live evaluation plan](docs/live-evaluation.md): preview ten public-address scenarios without making requests, then opt into a bounded run when a key is available.
 - [AI development log](docs/ai-development-log.md): implementation brief, decisions, and verification boundaries.
 - [OpenAPI feedback](docs/openapi-feedback.md): concrete observations from the specification and official documentation.
 - [Forward Geocoding specification](specs/forward-geocoding.json): the reviewed OpenAPI input, with [source and checksum](specs/README.md).
 
-The scope is one command, one API integration, and reproducible local tests. There is no hosted application, bulk processing, runtime LLM, or MCP integration.
+The scope is one address-review command, one API integration, reproducible local tests, and a separate ten-case evaluation script. There is no hosted application, general bulk-processing interface, runtime LLM, or MCP integration.
 
 ## License and attribution
 

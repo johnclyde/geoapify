@@ -1,6 +1,6 @@
 # AI-assisted development log
 
-This is a technical summary of the initial implementation session. It is not a verbatim transcript or a benchmark of the assistant. No API credentials or private correspondence are included.
+This is a technical summary of implementation and follow-up review. It is not a verbatim transcript or a benchmark of the assistant. No API credentials or private correspondence are included.
 
 ## Inputs and tools
 
@@ -13,7 +13,7 @@ This is a technical summary of the initial implementation session. It is not a v
 
 The technical instructions asked for a small Python 3.11+ command-line package that accepts one address and emits a review report. The package should support an API key from the environment, an optional country restriction, a configurable timeout, and a fixture mode requiring no key or network.
 
-The review policy was explicit: report `candidate_found` only for one returned building or amenity with street, house number, valid coordinates, confidence `1`, and `full_match`. Otherwise explain the need for review, preserve a valid empty result as `no_result`, and distinguish failures from no matches. Public examples should use illustrative synthetic data. Tests should cover meaningful response interpretation and failure paths.
+The initial review policy required exactly one returned building or amenity with street, house number, valid coordinates, confidence `1`, and `full_match`. Follow-up work asked for assessments per candidate, readable terminal reports, and a small live evaluation plan. The current policy also checks supplied component confidence scores and distinguishes broader results from competing possible buildings. Public examples remain illustrative synthetic data. Tests cover response interpretation and failure paths.
 
 ## Decisions and interpretation checks
 
@@ -28,6 +28,12 @@ These are documented design decisions and interpretation checks. They are not cl
 ## Corrections during review
 
 An independent review reproduced two local edge cases after the first eight tests passed. Python's default JSON parser allowed `NaN` and `Infinity` in offline fixtures even though the HTTP parser rejected them. Fixture parsing now rejects those constants too. An escaped lone Unicode surrogate in a response also caused an output traceback; JSON output now escapes Unicode safely, and invalid Unicode input is rejected before request construction. Regression cases were added to the existing tests. These were implementation corrections, not Geoapify service failures.
+
+The next review found that an overall confidence of `1` could hide a lower building-level confidence, and that any second result forced review even when it only described a street. Version `0.2.0` assesses each candidate, flags conflicting component scores, and selects a unique qualifying candidate only when the remaining distinct results are explicitly broader levels. A second possible building still requires review. Identical raw response rows count once; similar coordinates or formatted addresses are insufficient to merge candidates.
+
+The follow-up also added `--format text`, fixture/live provenance, and a next step for each outcome. Readable output escapes control characters from input and response fields so they cannot create misleading terminal lines. JSON remains the default and errors remain JSON in either mode.
+
+A separate [evaluation script](live-evaluation.md) prepares ten variations of one public civic address. Dry-run mode makes no requests; live mode requires an explicit option and an API key, caps the run at ten calls, spaces calls, and stops on failure. This is preparation for gathering observations, not evidence that the evaluation has been run.
 
 ## Verification and limits
 

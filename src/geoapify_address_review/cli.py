@@ -9,6 +9,7 @@ import sys
 
 from . import __version__
 from .core import AddressReviewError, fetch_response, review_response, validate_input
+from .render import render_text
 
 MAX_FIXTURE_BYTES = 1_048_576
 LOCAL_ERRORS = {
@@ -64,11 +65,15 @@ def main(argv: list[str] | None = None) -> int:
         "--fixture", metavar="PATH",
         help="read a saved JSON response without network access or an API key",
     )
+    parser.add_argument(
+        "--format", choices=("json", "text"), default="json",
+        help="report format (default: json); errors always use JSON",
+    )
     parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     try:
         args = parser.parse_args(argv)
         _, country = validate_input(args.address, args.country)
-        if args.fixture:
+        if args.fixture is not None:
             response = load_fixture(args.fixture)
         else:
             response = fetch_response(
@@ -78,11 +83,20 @@ def main(argv: list[str] | None = None) -> int:
                 timeout=args.timeout,
             )
         report = review_response(args.address, response)
+        report["source"] = "fixture" if args.fixture is not None else "live"
+        report["country_filter"] = None if args.fixture is not None else country
+        report["tool_version"] = __version__
     except AddressReviewError as error:
         details = {"code": error.code, "message": error.message}
         if error.http_status is not None:
             details["http_status"] = error.http_status
         print(json.dumps({"error": details}), file=sys.stderr)
         return 2 if error.code in LOCAL_ERRORS else 1
-    print(json.dumps(report, indent=2, allow_nan=False))
+    if args.format == "text":
+        # An ASCII-only terminal must still receive a complete readable report.
+        encoding = sys.stdout.encoding or "utf-8"
+        output = render_text(report).encode(encoding, errors="backslashreplace").decode(encoding)
+        print(output)
+    else:
+        print(json.dumps(report, indent=2, allow_nan=False))
     return 0

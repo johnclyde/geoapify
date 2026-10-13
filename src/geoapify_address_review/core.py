@@ -9,6 +9,8 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
+from . import __version__
+
 
 API_URL = "https://api.geoapify.com/v1/geocode/search"
 MAX_RESPONSE_BYTES = 1_048_576
@@ -27,6 +29,9 @@ RANK_SCORE_FIELDS = (
     "confidence_building_level", "importance", "popularity",
 )
 DATASOURCE_FIELDS = ("sourcename", "attribution", "license", "url")
+COARSE_RESULT_TYPES = frozenset(
+    ("street", "suburb", "district", "city", "county", "state", "postcode", "country")
+)
 
 
 class AddressReviewError(Exception):
@@ -141,7 +146,7 @@ def fetch_response(
         headers={
             "x-api-key": api_key,
             "Accept": "application/json",
-            "User-Agent": "geoapify-address-review/0.1.0",
+            "User-Agent": f"geoapify-address-review/{__version__}",
         },
         method="GET",
     )
@@ -183,7 +188,7 @@ def _text(value: object) -> str | None:
     return value.strip() if isinstance(value, str) and value.strip() else None
 
 
-def _candidate(result: dict) -> tuple[dict, list[str]]:
+def _candidate(result: dict) -> dict:
     components = {
         key: text for key in COMPONENT_FIELDS
         if (text := _text(result.get(key))) is not None
@@ -230,18 +235,33 @@ def _candidate(result: dict) -> tuple[dict, list[str]]:
     if _text(result_type) is None:
         result_type = None
     reasons = []
+    reason_codes = []
+
+    def flag(code: str, reason: str) -> None:
+        reason_codes.append(code)
+        reasons.append(reason)
+
     if result_type not in ("building", "amenity"):
-        reasons.append("The result is not at building or amenity level.")
-    if "housenumber" not in components or "street" not in components:
-        reasons.append("The result is missing a house number or street.")
+        flag("result_type_not_precise", "The result is not at building or amenity level.")
+    if "housenumber" not in components:
+        flag("missing_housenumber", "The result is missing a house number.")
+    if "street" not in components:
+        flag("missing_street", "The result is missing a street.")
     if coordinates is None:
-        reasons.append("Coordinates are missing or invalid.")
+        flag("invalid_coordinates", "Coordinates are missing or invalid.")
     if rank.get("confidence") != 1:
-        reasons.append("The confidence score is missing, invalid, or below 1.")
+        flag("confidence_not_one", "The confidence score is missing, invalid, or below 1.")
+    for level in ("city", "street", "building"):
+        field = f"confidence_{level}_level"
+        if field in rank and rank[field] < 1:
+            flag(
+                f"{field}_below_one",
+                f"The {level}-level confidence score is below 1.",
+            )
     if rank.get("match_type") != "full_match":
-        reasons.append("The match type is not full_match.")
+        flag("not_full_match", "The match type is not full_match.")
     if invalid_rank:
-        reasons.append("Some rank metadata is invalid.")
+        flag("invalid_rank", "Some rank metadata is invalid.")
     return {
         "formatted": _text(result.get("formatted")),
         "coordinates": coordinates,
@@ -249,7 +269,22 @@ def _candidate(result: dict) -> tuple[dict, list[str]]:
         "result_type": result_type,
         "rank": rank,
         "datasource": datasource,
-    }, reasons
+        "assessment": "needs_review" if reasons else "meets_rules",
+        "reason_codes": reason_codes,
+        "reasons": reasons,
+        "duplicate_of": None,
+    }
+
+
+def _duplicate_key(result: dict) -> str | None:
+    # Canonical JSON ignores object key order but distinguishes true from 1,
+    # and 1 from 1.0. Every raw field participates, including unknown metadata.
+    # Nonfinite values can occur in direct library calls; this key stays internal.
+    try:
+        return json.dumps(result, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
+    except (TypeError, ValueError, RecursionError):
+        # Unsupported non-JSON library input must never be merged by accident.
+        return None
 
 
 def review_response(address: str, payload: dict) -> dict:
@@ -258,24 +293,63 @@ def review_response(address: str, payload: dict) -> dict:
     results = _results(payload)
     candidates = []
     reasons = []
+    first_occurrences: dict[str, int] = {}
+    distinct_indices = []
+    for index, result in enumerate(results, 1):
+        candidate = _candidate(result)
+        key = _duplicate_key(result)
+        duplicate_of = first_occurrences.get(key) if key is not None else None
+        candidate["duplicate_of"] = duplicate_of
+        candidates.append(candidate)
+        if duplicate_of is None:
+            distinct_indices.append(index)
+            if key is not None:
+                first_occurrences[key] = index
+
+    selected_candidate = None
     if not results:
         status = "no_result"
         reasons.append("Geoapify returned no candidates.")
     else:
-        if len(results) != 1:
-            reasons.append("Multiple candidates were returned; choose one after review.")
-        for index, result in enumerate(results, 1):
-            candidate, candidate_reasons = _candidate(result)
-            candidates.append(candidate)
-            reasons.extend(f"Candidate {index}: {reason}" for reason in candidate_reasons)
-        status = "needs_review" if reasons else "candidate_found"
-        if status == "candidate_found":
-            reasons.append("One candidate meets the tool's conservative matching rules.")
+        qualifying = [
+            index for index in distinct_indices
+            if candidates[index - 1]["assessment"] == "meets_rules"
+        ]
+        status = "needs_review"
+        if not qualifying:
+            reasons.append("No distinct candidate meets all of the tool's review rules.")
+        elif len(qualifying) > 1:
+            reasons.append("Multiple distinct candidates meet the rules; choose one after review.")
+        else:
+            index = qualifying[0]
+            alternatives = [other for other in distinct_indices if other != index]
+            if all(
+                candidates[other - 1]["result_type"] in COARSE_RESULT_TYPES
+                for other in alternatives
+            ):
+                status = "candidate_found"
+                selected_candidate = index
+                reasons.append(f"Candidate {index} meets the tool's review rules.")
+                if alternatives:
+                    reasons.append("All other distinct results are explicitly coarse alternatives.")
+            else:
+                reasons.append(
+                    f"Candidate {index} meets the rules, but other distinct candidates "
+                    "are not explicitly coarse; review the alternatives."
+                )
+        duplicate_count = len(candidates) - len(distinct_indices)
+        if duplicate_count:
+            noun = "result" if duplicate_count == 1 else "results"
+            reasons.append(
+                f"{duplicate_count} exact duplicate {noun} did not affect the decision."
+            )
     return {
         "input": address,
         "status": status,
         "reasons": reasons,
         "candidate_count": len(candidates),
+        "distinct_candidate_count": len(distinct_indices),
+        "selected_candidate": selected_candidate,
         "candidates": candidates,
         "notice": NOTICE,
     }

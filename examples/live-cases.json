@@ -1,0 +1,72 @@
+{
+  "purpose": "Ten observation scenarios derived from one public civic address, not ten independent locations. These inputs are not accuracy ground truth and do not prescribe expected API results.",
+  "reference": {
+    "place": "Asian Art Museum",
+    "address": "200 Larkin Street, San Francisco, CA 94102, United States",
+    "source": "https://about.asianart.org/contact-us/",
+    "verified_on": "2026-10-12",
+    "note": "The museum's official contact page verifies the baseline address, not geocoding outcomes for these variations."
+  },
+  "cases": [
+    {
+      "id": "complete_address",
+      "scenario": "Complete public civic address as the reference input.",
+      "input": "200 Larkin Street, San Francisco, CA 94102, United States",
+      "country": "us"
+    },
+    {
+      "id": "abbreviations",
+      "scenario": "Abbreviated street suffix and country name.",
+      "input": "200 Larkin St, San Francisco, CA 94102, USA",
+      "country": "us"
+    },
+    {
+      "id": "missing_postcode",
+      "scenario": "Postcode omitted from the reference input.",
+      "input": "200 Larkin Street, San Francisco, CA, United States",
+      "country": "us"
+    },
+    {
+      "id": "missing_house_number",
+      "scenario": "House number omitted; observe the returned location level.",
+      "input": "Larkin Street, San Francisco, CA 94102, United States",
+      "country": "us"
+    },
+    {
+      "id": "street_typo",
+      "scenario": "Single transposition in the street name.",
+      "input": "200 Lakrin Street, San Francisco, CA 94102, United States",
+      "country": "us"
+    },
+    {
+      "id": "conflicting_postcode",
+      "scenario": "Reference postcode replaced by a conflicting postcode; no expected result is assumed.",
+      "input": "200 Larkin Street, San Francisco, CA 10001, United States",
+      "country": "us"
+    },
+    {
+      "id": "missing_city",
+      "scenario": "City omitted while retaining state, postcode, and country.",
+      "input": "200 Larkin Street, CA 94102, United States",
+      "country": "us"
+    },
+    {
+      "id": "conflicting_country_filter",
+      "scenario": "Reference US address restricted to France by the hard country filter.",
+      "input": "200 Larkin Street, San Francisco, CA 94102, United States",
+      "country": "fr"
+    },
+    {
+      "id": "partial_street",
+      "scenario": "Street suffix, state, postcode, and country text omitted.",
+      "input": "200 Larkin, San Francisco",
+      "country": "us"
+    },
+    {
+      "id": "implausible_house_number",
+      "scenario": "Artificially large house number to observe fallback behavior, without asserting that no such address exists.",
+      "input": "999999999 Larkin Street, San Francisco, CA 94102, United States",
+      "country": "us"
+    }
+  ]
+}

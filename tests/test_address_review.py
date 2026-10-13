@@ -80,7 +80,9 @@ class ReviewTests(unittest.TestCase):
             candidate = precise_result()
             candidate.update(update)
             cases[name] = [candidate]
-        cases["multiple precise candidates"] = [precise_result(), precise_result()]
+        alternative = precise_result()
+        alternative.update({"housenumber": "12", "formatted": "12 Example Street, Example City"})
+        cases["multiple distinct precise candidates"] = [precise_result(), alternative]
         for name, results in cases.items():
             with self.subTest(case=name):
                 report = core.review_response(ADDRESS, {"results": results})
